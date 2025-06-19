@@ -24,7 +24,7 @@ resource "null_resource" "example_provisioner" {
   }
 
   provisioner "file" {
-    source      = "local_file.txt"                              # Replace with your source file
+    source      = "local.conf"                              # Replace with your source file
     destination = "/home/${var.admin_username}/remote_file.txt" # Destination path on VM
   }
 }
