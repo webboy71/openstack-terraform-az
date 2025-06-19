@@ -40,5 +40,7 @@ Q_FLOATING_ALLOCATION_POOL=start=172.24.4.10,end=172.24.4.100
 ENABLE_FLOATING_IP=True
 Q_USE_PROVIDERNET_FOR_PUBLIC=True
 EOF'
-sudo -H -u stack bash -c '/opt/stack/devstack/stack.sh'
+#sudo -u stack bash -c '/opt/stack/devstack/stack.sh'
+sudo -u stack bash -c 'export HOME=/opt/stack; cd "$HOME"; /opt/stack/devstack/stack.sh'
+
 echo "done"
