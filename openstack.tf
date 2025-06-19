@@ -23,8 +23,14 @@ resource "null_resource" "example_provisioner" {
     private_key = file(var.ssh_private_key_path) # Path to your private key
   }
 
-  provisioner "file" {
-    source      = "local.conf"                              # Replace with your source file
-    destination = "/home/${var.admin_username}/remote_file.txt" # Destination path on VM
-  }
-}
+     provisioner "file" {
+       source      = "makestack.sh"
+       destination = "/home/azureuser/makestack.sh"
+     }
+    provisioner "remote-exec" {
+      inline = [
+        "chmod +x /home/azureuser/makestack.sh",
+        "sudo /home/azureuser/makestack.sh"
+      ]
+    }
+   }
