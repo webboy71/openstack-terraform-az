@@ -28,10 +28,13 @@ sudo -u stack bash -c 'git clone https://opendev.org/openstack/devstack /opt/sta
 sudo -u stack bash -c 'cat << EOF >> /opt/stack/devstack/local.conf
 [[local|localrc]]
 ADMIN_PASSWORD=tester
-DATABASE_PASSWORD=stackdb
-RABBIT_PASSWORD=stackqueue
+DATABASE_PASSWORD=tester
+RABBIT_PASSWORD=tester
 SERVICE_PASSWORD=tester
 HOST_IP=10.1.0.4
+SERVICE_HOST=$HOST_IP
+MYSQL_HOST=$HOST_IP
+RABBIT_HOST=$HOST_IP
 LOGFILE=$DEST/logs/stack.sh.log
 LOGDAYS=2
 SWIFT_HASH=66a3d6b56c1f479c8b4e70ab5c2000f5
