@@ -1,17 +1,18 @@
 #!/bin/bash
-sudo rm /etc/default/keyboard
-sudo bash -c 'cat << EOF >> /etc/default/keyboard
-# KEYBOARD CONFIGURATION FILE
 
-# Consult the keyboard(5) manual page.
+# Preseed keyboard layout
+echo "keyboard-configuration keyboard-configuration/layoutcode select us" | debconf-set-selections
+echo "keyboard-configuration keyboard-configuration/modelcode select pc105" | debconf-set-selections
 
-XKBMODEL="pc105"
-XKBLAYOUT="se"
-XKBVARIANT=""
-XKBOPTIONS=""
+# Reconfigure package
+dpkg-reconfigure -f noninteractive keyboard-configuration
 
-BACKSPACE="guess"
-EOF'
+# Optionally apply immediately (for console)
+setupcon
+
+# Persist change
+service console-setup restart
+
 sudo apt update -y && sudo apt upgrade -y
 sudo apt install -y git 
 sudo deluser stack
