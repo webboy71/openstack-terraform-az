@@ -24,8 +24,22 @@ variable "ssh_private_key_path" {
   type        = string
   sensitive   = false
 }
+variable "ssh_public_key_path" {
+  description = "Path to the SSH public key for accessing the VM"
+  type        = string
+  sensitive   = false
+}
+/*
 variable "public_ip_address" {
   description = "Public IP address of the VM"
   type        = string
   sensitive   = false
+}
+*/
+variable "resource_group_location" {
+  description = "value for the location of the resource group"
+  type = string
+  sensitive = false
+  default = "Sweden Central"
+  
 }

@@ -8,17 +8,34 @@ terraform {
       source  = "hashicorp/local"
       version = "~> 2.0"
     }
+    azapi = {
+      source  = "azure/azapi"
+      version = "~>1.5"
+    }
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~>3.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~>3.0"
+    }
   }
-}
+ }
+
 # provider configuration 
 provider "cloudflare" {
   api_token = var.cloudflare_api_token
+}
+provider "azurerm" {
+  features {} 
 }
 
 resource "null_resource" "example_provisioner" {
   connection {
     type        = "ssh"
-    host        = var.public_ip_address
+    #host        = var.public_ip_address
+    host        = azurerm_public_ip.my_terraform_public_ip.ip_address
     user        = var.admin_username
     private_key = file(var.ssh_private_key_path) # Path to your private key
   }
