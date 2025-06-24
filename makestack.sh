@@ -1,4 +1,5 @@
 #!/bin/bash
+sudo apt update -y && sudo apt upgrade -y
 sudo /usr/bin/timedatectl set-timezone UTC
 sudo apt-get install -y locales
 sudo locale-gen en_US.UTF-8
@@ -16,7 +17,6 @@ setupcon
 # Persist change
 service console-setup restart
 
-sudo apt update -y && sudo apt upgrade -y
 sudo apt install -y git vim tmux 
 #sudo deluser stack
 #sudo rm -rf /opt/stack
@@ -50,4 +50,14 @@ EOF'
 #sudo -u stack bash -c '/opt/stack/devstack/stack.sh'
 sudo -u stack bash -c 'export HOME=/opt/stack; cd "$HOME"; /opt/stack/devstack/stack.sh'
 
-echo "done"
+# Add cloudflare gpg key
+sudo mkdir -p --mode=0755 /usr/share/keyrings
+curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
+
+# Add this repo to your apt repositories
+echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared any main' | sudo tee /etc/apt/sources.list.d/cloudflared.list
+
+# install cloudflared
+sudo apt-get update && sudo apt-get install cloudflared
+
+cloudflared service install ${tunnel_token}

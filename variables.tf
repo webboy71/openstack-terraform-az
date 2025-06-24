@@ -19,6 +19,11 @@ variable "cloudflare_api_token" {
   type        = string
   sensitive   = true
 }
+variable "domain" {
+  description = "Cloudflare domain"
+  type        = string
+  sensitive   = true
+}
 variable "ssh_private_key_path" {
   description = "Path to the SSH private key for accessing the VM"
   type        = string
@@ -29,13 +34,11 @@ variable "ssh_public_key_path" {
   type        = string
   sensitive   = false
 }
-/*
-variable "public_ip_address" {
-  description = "Public IP address of the VM"
+variable "private_ip_address" {
+  description = "private IP address of the VM"
   type        = string
   sensitive   = false
 }
-*/
 variable "resource_group_location" {
   description = "value for the location of the resource group"
   type = string
