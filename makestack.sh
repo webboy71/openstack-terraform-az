@@ -1,5 +1,9 @@
 #!/bin/bash
-sudo apt update -y && sudo apt upgrade -y
+exec > >(tee -i /tmp/makestack.log)
+exec 2>&1
+set -ex
+export DEBIAN_FRONTEND=noninteractive
+sudo apt update -y && sudo apt upgrade -y && \
 sudo /usr/bin/timedatectl set-timezone UTC
 sudo apt-get install -y locales
 sudo locale-gen en_US.UTF-8
@@ -8,6 +12,7 @@ sudo locale-gen en_US.UTF-8
 echo "keyboard-configuration keyboard-configuration/layoutcode select us" | debconf-set-selections
 echo "keyboard-configuration keyboard-configuration/modelcode select pc105" | debconf-set-selections
 
+sudo apt-get install -y keyboard-configuration console-setup
 # Reconfigure package
 dpkg-reconfigure -f noninteractive keyboard-configuration
 
@@ -58,6 +63,8 @@ curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/
 echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared any main' | sudo tee /etc/apt/sources.list.d/cloudflared.list
 
 # install cloudflared
-sudo apt-get update && sudo apt-get install cloudflared
+sudo apt-get update && sudo apt-get install cloudflared && \
+sudo cloudflared service install $1
 
-cloudflared service install ${tunnel_token}
+echo "done"
+cat /tmp/makestack.log

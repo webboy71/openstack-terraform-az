@@ -1,10 +1,9 @@
 resource "random_pet" "rg_name" {
-  prefix = "rg"
 }
 
 resource "azurerm_resource_group" "rg" {
   location = var.resource_group_location
-  name     = random_pet.rg_name.id
+  name     = "rg-${random_pet.rg_name.id}"
 }
 
 # Create virtual network
@@ -126,7 +125,7 @@ resource "azurerm_linux_virtual_machine" "openstack_ubuntu" {
     #public_key = azapi_resource_action.ssh_public_key_gen.output.publicKey
   }
 
-#  boot_diagnostics {
-#    storage_account_uri = azurerm_storage_account.my_storage_account.primary_blob_endpoint
-#  }
+  #  boot_diagnostics {
+  #    storage_account_uri = azurerm_storage_account.my_storage_account.primary_blob_endpoint
+  #  }
 }

@@ -10,13 +10,12 @@ data "cloudflare_zero_trust_tunnel_cloudflared_token" "ubuntu_tunnel_token" {
   tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.ubuntu_tunnel.id
 }
 
-resource "random_pet" "cf_name" {
-  prefix = "os_tunnel"
-}
 
 resource "cloudflare_zero_trust_tunnel_cloudflared" "ubuntu_tunnel" {
+  depends_on = [azurerm_linux_virtual_machine.openstack_ubuntu]
   account_id = var.cloudflare_account_id
-  name       = random_pet.cf_name.id
+  #name       = random_pet.cf_name.id
+  name       = "cf_tunnel-${random_pet.rg_name.id}"
   config_src = "cloudflare"
 }
 
@@ -29,7 +28,7 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "ubuntu_tunnel" {
       {
         hostname = "${cloudflare_dns_record.dash.name}"
         service  = "http://${var.private_ip_address}"
-        path    = "dashboard"
+        path     = "dashboard"
       },
       {
         service = "http_status:404"

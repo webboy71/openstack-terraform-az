@@ -41,8 +41,8 @@ variable "private_ip_address" {
 }
 variable "resource_group_location" {
   description = "value for the location of the resource group"
-  type = string
-  sensitive = false
-  default = "Sweden Central"
-  
+  type        = string
+  sensitive   = false
+  default     = "Sweden Central"
+
 }

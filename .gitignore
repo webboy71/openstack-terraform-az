@@ -13,4 +13,4 @@ terraform.tfstate.backup
 *.tfstate.backup.local
 *.tfvars.override
 *.tfstate.override
-*.tfstate.backup.override
+*.terraform.tfstate.*
