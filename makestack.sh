@@ -1,4 +1,7 @@
 #!/bin/bash
+sudo /usr/bin/timedatectl set-timezone UTC
+sudo apt-get install -y locales
+sudo locale-gen en_US.UTF-8
 
 # Preseed keyboard layout
 echo "keyboard-configuration keyboard-configuration/layoutcode select us" | debconf-set-selections
@@ -14,15 +17,15 @@ setupcon
 service console-setup restart
 
 sudo apt update -y && sudo apt upgrade -y
-sudo apt install -y git 
-sudo deluser stack
-sudo rm -rf /opt/stack
+sudo apt install -y git vim tmux 
+#sudo deluser stack
+#sudo rm -rf /opt/stack
 sudo useradd -s /bin/bash -d /opt/stack -m stack
 sudo chmod +x /opt/stack
 echo "stack ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/stack
 #sudo -u stack -i
-sudo -H -u stack sudo -H -u stack bash -c 'git clone https://opendev.org/openstack/devstack /opt/stack/devstack'
-sudo -H -u stack bash -c 'cat << EOF >> /opt/stack/devstack/local.conf
+sudo -u stack bash -c 'git clone https://opendev.org/openstack/devstack /opt/stack/devstack'
+sudo -u stack bash -c 'cat << EOF >> /opt/stack/devstack/local.conf
 [[local|localrc]]
 ADMIN_PASSWORD=tester
 DATABASE_PASSWORD=stackdb
