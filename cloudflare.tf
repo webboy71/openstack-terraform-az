@@ -12,7 +12,7 @@ data "cloudflare_zero_trust_tunnel_cloudflared_token" "ubuntu_tunnel_token" {
 
 
 resource "cloudflare_zero_trust_tunnel_cloudflared" "ubuntu_tunnel" {
-  depends_on = [azurerm_linux_virtual_machine.openstack_ubuntu]
+  depends_on = [azurerm_public_ip.my_terraform_public_ip]
   account_id = var.cloudflare_account_id
   #name       = random_pet.cf_name.id
   name       = "cf_tunnel-${random_pet.rg_name.id}"

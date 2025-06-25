@@ -1,34 +1,64 @@
 #!/bin/bash
+
+# Redirect output to a log file
 exec > >(tee -i /tmp/makestack.log)
 exec 2>&1
 set -ex
+
+# skip installing stuff with interactive keyboard configuration triggers since it breaks the script
+sudo apt-mark hold keyboard-configuration
+sudo apt-mark hold console-setup
+
+# Set global keyboard layout configuration on Debian/Ubuntu
+
+# --- CONFIGURE THIS SECTION ---
+KEYBOARD_MODEL="pc105"
+KEYBOARD_LAYOUT="se"
+KEYBOARD_VARIANT=""
+KEYBOARD_OPTIONS=""
+# ------------------------------
+
+echo "Setting keyboard configuration to:"
+echo "  Model:   $KEYBOARD_MODEL"
+echo "  Layout:  $KEYBOARD_LAYOUT"
+echo "  Variant: $KEYBOARD_VARIANT"
+echo "  Options: $KEYBOARD_OPTIONS"
+
+# Update /etc/default/keyboard
+sudo tee /etc/default/keyboard > /dev/null <<EOF
+XKBMODEL="$KEYBOARD_MODEL"
+XKBLAYOUT="$KEYBOARD_LAYOUT"
+XKBVARIANT="$KEYBOARD_VARIANT"
+XKBOPTIONS="$KEYBOARD_OPTIONS"
+EOF
+
+# Apply the new keyboard settings
+echo "Applying new keyboard configuration..."
+sudo setupcon
+sudo systemctl restart keyboard-setup.service || echo "keyboard-setup.service not found; continuing..."
+echo "Keyboard configuration updated successfully."
+
 export DEBIAN_FRONTEND=noninteractive
 sudo apt update -y && sudo apt upgrade -y && \
 sudo /usr/bin/timedatectl set-timezone UTC
 sudo apt-get install -y locales
 sudo locale-gen en_US.UTF-8
 
-# Preseed keyboard layout
-echo "keyboard-configuration keyboard-configuration/layoutcode select us" | debconf-set-selections
-echo "keyboard-configuration keyboard-configuration/modelcode select pc105" | debconf-set-selections
-
-sudo apt-get install -y keyboard-configuration console-setup
-# Reconfigure package
-dpkg-reconfigure -f noninteractive keyboard-configuration
-
-# Optionally apply immediately (for console)
-setupcon
-
-# Persist change
-service console-setup restart
-
 sudo apt install -y git vim tmux 
-#sudo deluser stack
-#sudo rm -rf /opt/stack
-sudo useradd -s /bin/bash -d /opt/stack -m stack
+
+#create stack user if it does not exist
+if ! id "stack" &>/dev/null; then
+  sudo useradd -s /bin/bash -d /opt/stack -m stack
+  echo "User 'stack' created."
+else
+  echo "User 'stack' already exists. Skipping creation."
+fi
+
 sudo chmod +x /opt/stack
 echo "stack ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/stack
-#sudo -u stack -i
+echo "################ NOW I AM USER stack ################"
+sudo -u stack bash -c 'export DEBIAN_FRONTEND=noninteractive'
+
 sudo -u stack bash -c 'git clone https://opendev.org/openstack/devstack /opt/stack/devstack'
 sudo -u stack bash -c 'cat << EOF >> /opt/stack/devstack/local.conf
 [[local|localrc]]
@@ -53,7 +83,7 @@ ENABLE_FLOATING_IP=True
 Q_USE_PROVIDERNET_FOR_PUBLIC=True
 EOF'
 #sudo -u stack bash -c '/opt/stack/devstack/stack.sh'
-sudo -u stack bash -c 'export HOME=/opt/stack; cd "$HOME"; /opt/stack/devstack/stack.sh'
+sudo -u stack bash -c 'export HOME=/opt/stack;export DEBIAN_FRONTEND=noninteractive; cd "$HOME"; /opt/stack/devstack/stack.sh'
 
 # Add cloudflare gpg key
 sudo mkdir -p --mode=0755 /usr/share/keyrings
@@ -67,4 +97,3 @@ sudo apt-get update && sudo apt-get install cloudflared && \
 sudo cloudflared service install $1
 
 echo "done"
-cat /tmp/makestack.log
