@@ -1,0 +1,1 @@
+This Terraform project will create an Ubuntu VM in Azure, install Devstack, create a cloudflared tunnel on Cloudflare, and install cloudflared on the server so that the web interface can be reached via the tunnel.   
