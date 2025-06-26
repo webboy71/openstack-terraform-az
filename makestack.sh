@@ -4,7 +4,7 @@
 exec > >(tee -i /tmp/makestack.log)
 exec 2>&1
 set -ex
-
+IP_ADD=$2
 # skip installing stuff with interactive keyboard configuration triggers since it breaks the script
 sudo apt-mark hold keyboard-configuration
 sudo apt-mark hold console-setup
@@ -60,17 +60,16 @@ echo "################ NOW I AM USER stack ################"
 sudo -u stack bash -c 'export DEBIAN_FRONTEND=noninteractive'
 
 sudo -u stack bash -c 'git clone https://opendev.org/openstack/devstack /opt/stack/devstack'
-IP_ADD="$2"
-sudo -u stack bash -c 'cat << EOF >> /opt/stack/devstack/local.conf
+sudo -u stack bash -c "cat << EOF >> /opt/stack/devstack/local.conf
 [[local|localrc]]
 ADMIN_PASSWORD=tester
 DATABASE_PASSWORD=tester
 RABBIT_PASSWORD=tester
 SERVICE_PASSWORD=tester
 HOST_IP=$IP_ADD
-SERVICE_HOST=$HOST_IP
-MYSQL_HOST=$HOST_IP
-RABBIT_HOST=$HOST_IP
+SERVICE_HOST=$IP_ADD
+SERVICE_HOST=$IP_ADD
+SERVICE_HOST=$IP_ADD
 LOGFILE=$DEST/logs/stack.sh.log
 LOGDAYS=2
 SWIFT_HASH=66a3d6b56c1f479c8b4e70ab5c2000f5
@@ -82,7 +81,7 @@ FLOATING_RANGE=172.24.4.0/24
 Q_FLOATING_ALLOCATION_POOL=start=172.24.4.10,end=172.24.4.100
 ENABLE_FLOATING_IP=True
 Q_USE_PROVIDERNET_FOR_PUBLIC=True
-EOF'
+EOF"
 
 #sudo -u stack bash -c '/opt/stack/devstack/stack.sh'
 sudo -u stack bash -c 'export HOME=/opt/stack;export DEBIAN_FRONTEND=noninteractive; cd "$HOME"; /opt/stack/devstack/stack.sh'
