@@ -27,6 +27,11 @@ variable "hostname" {
   description = "hostname"
   type        = string
 }
+variable "keystone_hostname" {
+  description = "hostname"
+  type        = string
+  default     = "keystone"
+}
 variable "ssh_private_key_path" {
   description = "Path to the SSH private key for accessing the VM"
   type        = string
@@ -37,11 +42,11 @@ variable "ssh_public_key_path" {
   type        = string
   sensitive   = false
 }
-variable "private_ip_address" {
-  description = "private IP address of the VM"
-  type        = string
-  sensitive   = false
-}
+#variable "private_ip_address" {
+#  description = "private IP address of the VM"
+#  type        = string
+#  sensitive   = false
+#}
 variable "resource_group_location" {
   description = "value for the location of the resource group"
   type        = string

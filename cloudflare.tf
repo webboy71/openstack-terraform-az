@@ -27,8 +27,13 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "ubuntu_tunnel" {
     ingress = [
       {
         hostname = "${cloudflare_dns_record.dashboard.name}"
-        service  = "http://${var.private_ip_address}"
+        service  = "http://${azurerm_linux_virtual_machine.openstack_ubuntu.public_ip_address}"
         path     = "dashboard"
+      },
+      {
+        hostname = "${cloudflare_dns_record.dashboard.name}"
+        service  = "http://${azurerm_linux_virtual_machine.openstack_ubuntu.public_ip_address}"
+        path     = "identity/"
       },
       {
         service = "http_status:404"

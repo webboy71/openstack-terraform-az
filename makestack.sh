@@ -60,13 +60,14 @@ echo "################ NOW I AM USER stack ################"
 sudo -u stack bash -c 'export DEBIAN_FRONTEND=noninteractive'
 
 sudo -u stack bash -c 'git clone https://opendev.org/openstack/devstack /opt/stack/devstack'
+IP_ADD="$2"
 sudo -u stack bash -c 'cat << EOF >> /opt/stack/devstack/local.conf
 [[local|localrc]]
 ADMIN_PASSWORD=tester
 DATABASE_PASSWORD=tester
 RABBIT_PASSWORD=tester
 SERVICE_PASSWORD=tester
-HOST_IP=10.1.0.4
+HOST_IP=$IP_ADD
 SERVICE_HOST=$HOST_IP
 MYSQL_HOST=$HOST_IP
 RABBIT_HOST=$HOST_IP
@@ -98,3 +99,5 @@ sudo apt-get update && sudo apt-get install cloudflared && \
 sudo cloudflared service install $1
 
 echo "done"
+
+exit 0
