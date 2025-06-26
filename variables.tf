@@ -22,7 +22,10 @@ variable "cloudflare_api_token" {
 variable "domain" {
   description = "Cloudflare domain"
   type        = string
-  sensitive   = true
+}
+variable "hostname" {
+  description = "hostname"
+  type        = string
 }
 variable "ssh_private_key_path" {
   description = "Path to the SSH private key for accessing the VM"

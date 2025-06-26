@@ -12,7 +12,7 @@ data "cloudflare_zero_trust_tunnel_cloudflared_token" "ubuntu_tunnel_token" {
 
 
 resource "cloudflare_zero_trust_tunnel_cloudflared" "ubuntu_tunnel" {
-  depends_on = [azurerm_public_ip.my_terraform_public_ip]
+  depends_on = [azurerm_public_ip.os_terraform_public_ip]
   account_id = var.cloudflare_account_id
   #name       = random_pet.cf_name.id
   name       = "cf_tunnel-${random_pet.rg_name.id}"
@@ -41,8 +41,8 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "ubuntu_tunnel" {
   }
 }
 
-resource "cloudflare_dns_record" "dash" {
-  name    = "dash.${var.domain}"
+resource "cloudflare_dns_record" "dashboard" {
+  name    = "${var.hostname}.${var.domain}"
   ttl     = 1
   type    = "CNAME"
   content = "${local.ubuntu_tunnel_cname}.cfargotunnel.com"
