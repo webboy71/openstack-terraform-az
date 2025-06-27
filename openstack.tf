@@ -51,7 +51,7 @@ resource "null_resource" "ubuntu_openstack_provisioner" {
     inline = [
       #"export TUN_TOKEN=${data.cloudflare_zero_trust_tunnel_cloudflared_token.ubuntu_tunnel_token.token}",
       "chmod +x /home/azureuser/makestack.sh",
-      "sudo /home/azureuser/makestack.sh ${data.cloudflare_zero_trust_tunnel_cloudflared_token.ubuntu_tunnel_token.token}",
+      "sudo /home/azureuser/makestack.sh ${data.cloudflare_zero_trust_tunnel_cloudflared_token.ubuntu_tunnel_token.token} ${var.devstack_password} ${var.private_ip_address}",
       "grep -q \"CSRF_TRUSTED_ORIGINS\" /opt/stack/horizon/openstack_dashboard/local/local_settings.py || \\",
       "echo \"CSRF_TRUSTED_ORIGINS = [\\\"https://${var.hostname}.${var.domain}\\\"]\" | sudo tee -a /opt/stack/horizon/openstack_dashboard/local/local_settings.py > /dev/null",
       "sudo systemctl restart apache2"

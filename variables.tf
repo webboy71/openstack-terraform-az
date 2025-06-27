@@ -1,3 +1,11 @@
+variable "devstack_password" {
+  description = "Password for devstack passwords (in makestack.sh)"
+  type        = string
+  #setting sensitive messes up the output.
+  #sensitive   = true
+  default     = "tester"
+}
+
 variable "cloudflare_account_id" {
   description = "ID for the Cloudflare account"
   type        = string
@@ -41,6 +49,7 @@ variable "private_ip_address" {
   description = "private IP address of the VM"
   type        = string
   sensitive   = false
+  default    = "10.1.0.4"
 }
 variable "resource_group_location" {
   description = "value for the location of the resource group"
